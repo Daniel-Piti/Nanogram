@@ -1,3 +1,5 @@
+
+
 function createMartix(size){
     matrix = new Array(size);
     for(let i = 0; i<size; i++){
@@ -24,14 +26,14 @@ function loadFirstLine(){
     let row = document.createElement('tr');
     let box = document.createElement('td');
     box.style.backgroundColor = "rgb(255, 255, 255)";
-    box.classList = 'blank';
+    box.className = 'blank';
     row.appendChild(box);
 
 //First line
-    for(let i = 0; i< size; i++){
+    for(let i = 0; i< lvl.size; i++){
         let box = document.createElement('td');
-        box.innerHTML =lvl1.up[i];
-        box.className = 'edge'
+        box.innerHTML = lvl.up[i];
+        box.className = 'edge';
         row.appendChild(box);
     }
     table.appendChild(row);
@@ -39,36 +41,44 @@ function loadFirstLine(){
 
 function loadTable(){
     loadFirstLine();
-    for (let i = 0; i < size; i++) {
+    for (let i = 0; i < lvl.size; i++) {
         let row = document.createElement('tr');
         let box = document.createElement('td');
         box.className = 'edge'
-        box.innerHTML =lvl1.left[i];
+        box.innerHTML =lvl.left[i];
         row.appendChild(box);
-        for(let j = 0; j < size; j++){
+        for(let j = 0; j < lvl.size; j++){
             let box = document.createElement('td');
             box.style.backgroundColor = "rgb(255, 255, 255)";
-            box.id = i*4+j;
+            box.id = i*lvl.size+j;
             row.appendChild(box);
-    
             box.addEventListener('mousedown', e => {
                 e = e || window.event;
                 e = e.target;
+                clicked = 1;
                 if(getComputedStyle(box).backgroundColor == "rgb(255, 255, 255)") {
-                    console.log(parseInt(e.id/size), e.id%size);
-                    if (lvl1.matrix[parseInt(e.id/size)][e.id%size] == 1) {  
+                    console.log(parseInt(e.id/lvl.size), e.id%lvl.size);
+                    if (lvl.matrix[parseInt(e.id/lvl.size)][e.id%lvl.size] == 1) {  
                         e.style.backgroundColor = "#000000";
                         cur++;
                         checkPerfectLine(e.id);
-                        if(cur == 9)
+                        if(cur == lvl.total){
                             alert("gg");
+                            loadGame();
+                            cur = 0;
+                            lives = 3;
+                        }
                     }
                     else {
                         e.style.backgroundColor = "#ffcccc";
                         lives_item.removeChild(lives_item.childNodes[0]);
                         lives--;
-                        if(lives == 0)
+                        if(lives == 0){
                             alert("U lost!");
+                            loadGame();
+                            cur = 0;
+                            lives = 3;
+                        }
                     }
                 }
             });
@@ -78,20 +88,28 @@ function loadTable(){
                 e = e.target;
                 if(clicked)
                     if(getComputedStyle(box).backgroundColor == "rgb(255, 255, 255)") {
-                        console.log(parseInt(e.id/size), e.id%size);
-                        if (lvl1.matrix[parseInt(e.id/size)][e.id%size] == 1) {    
+                        console.log(parseInt(e.id/lvl.size), e.id%lvl.size);
+                        if (lvl.matrix[parseInt(e.id/lvl.size)][e.id%lvl.size] == 1) {    
                             e.style.backgroundColor = "#000000";
                             cur++;
                             checkPerfectLine(e.id);
-                            if(cur == 9)
+                            if(cur == lvl.total){
                                 alert("gg");
+                                loadGame();
+                                cur = 0;
+                                lives = 3;
+                            }
                         }
                         else {
                             e.style.backgroundColor = "#ffcccc";
                             lives_item.removeChild(lives_item.childNodes[0]);
                             lives--;
-                            if(lives == 0)
+                            if(lives == 0){
                                 alert("U lost!");
+                                loadGame();
+                                cur = 0;
+                                lives = 3;
+                            }
                         }
                     }
                 });
@@ -105,44 +123,38 @@ function loadMouseEvents(){
     table.addEventListener('mouseenter',   e => { clicked = 0; });
     document.addEventListener('mousedown', e => { clicked = 1; });
     document.addEventListener('mouseup',   e => { clicked = 0; });
-
 }
 
 function checkPerfectLine(id){
+    console.log(id);
     let box = document.getElementById(id);
-    let row = parseInt(id/size);
-    let col = id % size;
+    let row = parseInt(id/lvl.size);
+    let col = id % lvl.size;
     let counter = 0;
 
-    for(let i = 0; i < size; i++)
-        if(getComputedStyle(document.getElementById(i*size+col)).backgroundColor == "rgb(0, 0, 0)")
+    for(let i = 0; i < lvl.size; i++)
+        if(getComputedStyle(document.getElementById(i*lvl.size+col)).backgroundColor == "rgb(0, 0, 0)")
             counter++;
-    if(counter == lvl1.totalUp[col])
-        fillCol(col);
+        if(counter == lvl.totalUp[col])
+            fillCol(col);
 
     counter = 0;
-    for(let i = 0; i < size; i++){
-        if(getComputedStyle(document.getElementById(row*size+i)).backgroundColor == "rgb(0, 0, 0)")
+    for(let i = 0; i < lvl.size; i++){
+        if(getComputedStyle(document.getElementById(row*lvl.size+i)).backgroundColor == "rgb(0, 0, 0)")
             counter++;
     }
-    if(counter == lvl1.totalLeft[row])
+    if(counter == lvl.totalLeft[row])
         fillRow(row);
 }
 
 function fillCol(col){
-    for(let i = 0; i < size; i++){
-        if(lvl1.matrix[i][col] == 1)
-            document.getElementById(col+i*size).style.backgroundColor = "rgb(0, 0, 0)";
-        else
-            document.getElementById(col+i*size).style.backgroundColor = '#ffcccc';
-    }         
+    for(let i = 0; i < lvl.size; i++)
+        if(lvl.matrix[i][col] == 0)
+            document.getElementById(col+i*lvl.size).style.backgroundColor = '#ffcccc';    
 }
 
 function fillRow(row){
-    for(let i = 0; i < size; i++){
-        if(lvl1.matrix[row][i] == 1)
-            document.getElementById(row*size + i).style.backgroundColor = "rgb(0, 0, 0)";
-        else
-            document.getElementById(row*size + i).style.backgroundColor = '#ffcccc';
-    }  
+    for(let i = 0; i < lvl.size; i++)
+        if(lvl.matrix[row][i] == 0)
+            document.getElementById(row*lvl.size + i).style.backgroundColor = '#ffcccc';
 }

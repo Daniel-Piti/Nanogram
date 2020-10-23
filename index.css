@@ -6,13 +6,12 @@ html{
 table {
     margin: auto;
     border-radius: 20px;
-    border: 2px solid #333;
+    border-collapse: collapse;
 }
 
 td {
-    border-radius: 15px;
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     border: 2px solid #333;
     background-color: #ffffff;
     user-select: none;
@@ -27,11 +26,13 @@ h3 {
 }
 
 .blank{
-   border: 2px;
+   border: 0px;
 }
 
 .edge{
+    padding: 10px 10px 10px 10px;
     background-color: lightyellow;
+    border-top-left-radius: 10px;
 }
 
 #lives{
