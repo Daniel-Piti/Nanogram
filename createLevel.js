@@ -52,45 +52,20 @@ function loadTable(){
             box.style.backgroundColor = "rgb(255, 255, 255)";
             box.id = i*lvl.size+j;
             row.appendChild(box);
-            box.addEventListener('mousedown', e => {
+            //FIX!@#$%^&*()
+
+            //right click
+            box.addEventListener('contextmenu', e => { e.preventDefault(); });
+
+            //enter
+            box.addEventListener('mouseenter', e => {
                 e = e || window.event;
                 e = e.target;
-                clicked = 1;
-                if(getComputedStyle(box).backgroundColor == "rgb(255, 255, 255)") {
-                    console.log(parseInt(e.id/lvl.size), e.id%lvl.size);
-                    if (lvl.matrix[parseInt(e.id/lvl.size)][e.id%lvl.size] == 1) {  
-                        e.style.backgroundColor = "#000000";
-                        cur++;
-                        checkPerfectLine(e.id);
-                        if(cur == lvl.total){
-                            alert("gg");
-                            loadGame();
-                            cur = 0;
-                            lives = 3;
-                        }
-                    }
-                    else {
-                        e.style.backgroundColor = "#ffcccc";
-                        lives_item.removeChild(lives_item.childNodes[0]);
-                        lives--;
-                        if(lives == 0){
-                            alert("U lost!");
-                            loadGame();
-                            cur = 0;
-                            lives = 3;
-                        }
-                    }
-                }
-            });
-    
-            box.addEventListener('mousemove', e => {
-                e = e || window.event;
-                e = e.target;
-                if(clicked)
+                if(clicked == 1){
                     if(getComputedStyle(box).backgroundColor == "rgb(255, 255, 255)") {
-                        console.log(parseInt(e.id/lvl.size), e.id%lvl.size);
-                        if (lvl.matrix[parseInt(e.id/lvl.size)][e.id%lvl.size] == 1) {    
-                            e.style.backgroundColor = "#000000";
+                        //if should b black -> right
+                        if (lvl.matrix[parseInt(e.id/lvl.size)][e.id%lvl.size] == 1) {
+                            e.style.backgroundColor = 'rgb(0,0,0)';
                             cur++;
                             checkPerfectLine(e.id);
                             if(cur == lvl.total){
@@ -100,6 +75,7 @@ function loadTable(){
                                 lives = 3;
                             }
                         }
+                        //if should b X -> wrong
                         else {
                             e.style.backgroundColor = "#ffcccc";
                             lives_item.removeChild(lives_item.childNodes[0]);
@@ -112,17 +88,107 @@ function loadTable(){
                             }
                         }
                     }
-                });
+                }
+                else if(clicked == 2){
+                    if(getComputedStyle(box).backgroundColor == "rgb(255, 255, 255)") {
+                        //if should b black -> wrong
+                        if (lvl.matrix[parseInt(e.id/lvl.size)][e.id%lvl.size] == 1) {
+                            e.style.backgroundColor = 'rgb(0,0,0)';
+                            cur++;
+                            checkPerfectLine(e.id);
+                            lives_item.removeChild(lives_item.childNodes[0]);
+                            lives--;
+                            if(lives == 0){
+                                alert("U lost!");
+                                loadGame();
+                                cur = 0;
+                                lives = 3;
+                            }
+                            if(cur == lvl.total){
+                                alert("gg");
+                                loadGame();
+                                cur = 0;
+                                lives = 3;
+                            }
+                        }
+                        //if should b X -> right
+                        else {
+                            e.style.backgroundColor = "#ffcccc";
+                        }
+                    }
+                }
+            });
+            //left click
+            box.addEventListener('mousedown', e => {
+                if(e.button == 0){
+                    clicked = 1;
+                    e = e || window.event;
+                    e = e.target;
+                    if(getComputedStyle(box).backgroundColor == "rgb(255, 255, 255)") {
+                        //if should b black -> right
+                        if (lvl.matrix[parseInt(e.id/lvl.size)][e.id%lvl.size] == 1) {
+                            e.style.backgroundColor = 'rgb(0,0,0)';
+                            cur++;
+                            checkPerfectLine(e.id);
+                            if(cur == lvl.total){
+                                alert("gg");
+                                loadGame();
+                                cur = 0;
+                                lives = 3;
+                            }
+                        }
+                        //if should b X -> wrong
+                        else {
+                            e.style.backgroundColor = "#ffcccc";
+                            lives_item.removeChild(lives_item.childNodes[0]);
+                            lives--;
+                            if(lives == 0){
+                                alert("U lost!");
+                                loadGame();
+                                cur = 0;
+                                lives = 3;
+                            }
+                        }
+                    }
+                }else if(e.button == 2){
+                    e = e || window.event;
+                    e = e.target;
+                    clicked = 2;
+                    if(getComputedStyle(box).backgroundColor == "rgb(255, 255, 255)") {
+                        //if should b black -> wrong
+                        if (lvl.matrix[parseInt(e.id/lvl.size)][e.id%lvl.size] == 1) {
+                            e.style.backgroundColor = 'rgb(0,0,0)';
+                            cur++;
+                            lives_item.removeChild(lives_item.childNodes[0]);
+                            lives--;
+                            checkPerfectLine(e.id);
+                            if(lives == 0){
+                                alert("U lost!");
+                                loadGame();
+                                cur = 0;
+                                lives = 3;
+                            }
+                            if(cur == lvl.total){
+                                alert("gg");
+                                loadGame();
+                                cur = 0;
+                                lives = 3;
+                            }
+                        }
+                        //if should b X -> right
+                        else {
+                            e.style.backgroundColor = "#ffcccc";
+                        }
+                    }
+                }
+
+            });
+            //up
+            box.addEventListener("mouseup", function(e) { clicked = 0; });
         }
         table.appendChild(row);
     }
     
-}
-
-function loadMouseEvents(){
-    table.addEventListener('mouseenter',   e => { clicked = 0; });
-    document.addEventListener('mousedown', e => { clicked = 1; });
-    document.addEventListener('mouseup',   e => { clicked = 0; });
 }
 
 function checkPerfectLine(id){
