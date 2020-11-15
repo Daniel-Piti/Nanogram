@@ -34,6 +34,7 @@ function loadFirstLine(){
         let box = document.createElement('td');
         box.innerHTML = lvl.up[i];
         box.className = 'edge';
+        box.addEventListener('mouseenter', e => clicked = 0);
         row.appendChild(box);
     }
     table.appendChild(row);
@@ -159,7 +160,7 @@ function loadTable(){
             //left click
             box.addEventListener('mousedown', e => event_mousedown(e));
             //up
-            box.addEventListener("mouseup", function(e) { clicked = 0; });
+            box.addEventListener("mouseup", e => clicked = 0 );
         }
         table.appendChild(row);
     }
